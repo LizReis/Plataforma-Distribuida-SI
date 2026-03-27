@@ -33,7 +33,8 @@ public class WorkerNode {
 
             clock.tick();
             String payload = workerId + ":" + workerPort;
-            Message regReq = new Message(Message.Type.WORKER_REGISTER, payload, null, null);
+            // ADICIONADO: clock.getTime()
+            Message regReq = new Message(Message.Type.WORKER_REGISTER, payload, null, null, clock.getTime());
             out.writeObject(regReq);
 
             Message response = (Message) in.readObject();
@@ -51,9 +52,9 @@ public class WorkerNode {
                  ObjectInputStream in = new ObjectInputStream(socket.getInputStream())) {
 
                 clock.tick();
-                Message hbReq = new Message(Message.Type.HEARTBEAT, workerId, null, null);
+                // ADICIONADO: clock.getTime()
+                Message hbReq = new Message(Message.Type.HEARTBEAT, workerId, null, null, clock.getTime());
                 out.writeObject(hbReq);
-                // Lê resposta silenciosamente para não poluir o terminal
                 in.readObject();
 
             } catch (Exception e) {
@@ -103,7 +104,8 @@ public class WorkerNode {
              ObjectInputStream in = new ObjectInputStream(socket.getInputStream())) {
 
             clock.tick();
-            Message msg = new Message(Message.Type.TASK_COMPLETED, null, null, task);
+            // ADICIONADO: clock.getTime()
+            Message msg = new Message(Message.Type.TASK_COMPLETED, null, null, task, clock.getTime());
             out.writeObject(msg);
 
         } catch (Exception e) {

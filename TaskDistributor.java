@@ -52,7 +52,8 @@ public class TaskDistributor {
              ObjectOutputStream out = new ObjectOutputStream(socket.getOutputStream());
              ObjectInputStream in = new ObjectInputStream(socket.getInputStream())) {
              
-             Message msg = new Message(Message.Type.ASSIGN_TASK, null, null, task);
+             // ADICIONADO: 0 no final para satisfazer o construtor da Message
+             Message msg = new Message(Message.Type.ASSIGN_TASK, null, null, task, 0);
              out.writeObject(msg);
              
         } catch (Exception e) {

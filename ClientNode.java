@@ -19,7 +19,8 @@ public class ClientNode {
              ObjectInputStream in = new ObjectInputStream(socket.getInputStream())) {
 
             clock.tick();
-            Message authReq = new Message(Message.Type.AUTH_REQUEST, username + ":" + password, null, null);
+            // ADICIONADO: clock.getTime() no final
+            Message authReq = new Message(Message.Type.AUTH_REQUEST, username + ":" + password, null, null, clock.getTime());
             out.writeObject(authReq);
 
             Message response = (Message) in.readObject();
@@ -49,7 +50,8 @@ public class ClientNode {
             String taskId = UUID.randomUUID().toString();
             Task newTask = new Task(taskId, authToken, description, clock.getTime());
 
-            Message submitReq = new Message(Message.Type.SUBMIT_TASK, null, authToken, newTask);
+            // ADICIONADO: clock.getTime() no final
+            Message submitReq = new Message(Message.Type.SUBMIT_TASK, null, authToken, newTask, clock.getTime());
             out.writeObject(submitReq);
 
             Message response = (Message) in.readObject();
@@ -59,6 +61,7 @@ public class ClientNode {
             e.printStackTrace();
         }
     }
+    
 
     public static void main(String[] args) {
         ClientNode client = new ClientNode();

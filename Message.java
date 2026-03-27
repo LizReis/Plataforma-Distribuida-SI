@@ -14,7 +14,7 @@ public class Message implements Serializable {
     private Task task;    
     private int timestamp;  
 
-    public Message(Type type, String payload, String token, Task task) {
+    public Message(Type type, String payload, String token, Task task, int timestamp) {
         this.type = type;
         this.payload = payload;
         this.token = token;

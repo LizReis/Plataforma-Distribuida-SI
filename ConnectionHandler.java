@@ -33,9 +33,9 @@ public class ConnectionHandler implements Runnable {
                 String token = authService.authenticate(credentials[0], credentials[1]);
 
                 if (token != null) {
-                    out.writeObject(new Message(Message.Type.AUTH_SUCCESS, "Login efetuado", token, null));
+                    out.writeObject(new Message(Message.Type.AUTH_SUCCESS, "Login efetuado", token, null, clock.tick()));
                 } else {
-                    out.writeObject(new Message(Message.Type.AUTH_FAIL, "Credenciais inválidas", null, null));
+                    out.writeObject(new Message(Message.Type.AUTH_FAIL, "Credenciais inválidas", null, null, clock.tick()));
                 }
             } 
             else if (message.getType() == Message.Type.SUBMIT_TASK) {
@@ -46,9 +46,9 @@ public class ConnectionHandler implements Runnable {
                     // Repassa para o balanceador de carga distribuir
                     taskDistributor.dispatchTask(receivedTask);
                     
-                    out.writeObject(new Message(Message.Type.TASK_SUCCESS, "Tarefa em processamento", null, null));
+                    out.writeObject(new Message(Message.Type.TASK_SUCCESS, "Tarefa em processamento", null, null, clock.tick()));
                 } else {
-                    out.writeObject(new Message(Message.Type.ERROR, "Não autenticado", null, null));
+                    out.writeObject(new Message(Message.Type.ERROR, "Não autenticado", null, null, clock.tick()));
                 }
             }
             else if (message.getType() == Message.Type.WORKER_REGISTER) {
@@ -57,23 +57,23 @@ public class ConnectionHandler implements Runnable {
                 int workerPort = Integer.parseInt(data[1]);
                 activeWorkers.put(workerId, new WorkerInfo(workerId, clientSocket.getInetAddress().getHostAddress(), workerPort));
                 System.out.println("Worker registrado: " + workerId);
-                out.writeObject(new Message(Message.Type.TASK_SUCCESS, "Registro efetuado", null, null));
+                out.writeObject(new Message(Message.Type.TASK_SUCCESS, "Registro efetuado", null, null, clock.tick()));
             }
             else if (message.getType() == Message.Type.HEARTBEAT) {
                 String workerId = message.getPayload();
                 if (activeWorkers.containsKey(workerId)) {
                     activeWorkers.get(workerId).updateHeartbeat();
                 }
-                out.writeObject(new Message(Message.Type.TASK_SUCCESS, "ACK", null, null));
+                out.writeObject(new Message(Message.Type.TASK_SUCCESS, "ACK", null, null, clock.tick()));
             }
             // NOVO: Recebendo a conclusão da tarefa do Worker
             else if (message.getType() == Message.Type.TASK_COMPLETED) {
                 Task completedTask = message.getTask();
                 System.out.println("-> ESTADO GLOBAL ATUALIZADO: Tarefa '" + completedTask.getDescription() + "' foi CONCLUÍDA!");
                 // O estado já vem atualizado do worker, mas poderíamos acessar o globalTasks aqui se precisasse
-                out.writeObject(new Message(Message.Type.TASK_SUCCESS, "ACK de Conclusão", null, null));
+                out.writeObject(new Message(Message.Type.TASK_SUCCESS, "ACK de Conclusão", null, null, clock.tick()));
             }
-            
+
 
         } catch (Exception e) {
             // Logs suprimidos para limpeza do console
