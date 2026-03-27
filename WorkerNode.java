@@ -38,6 +38,7 @@ public class WorkerNode {
             out.writeObject(regReq);
 
             Message response = (Message) in.readObject();
+            clock.update(response.getTimestamp());
             System.out.println("Registro no Orquestrador: " + response.getPayload());
 
         } catch (Exception e) {
@@ -55,7 +56,8 @@ public class WorkerNode {
                 // ADICIONADO: clock.getTime()
                 Message hbReq = new Message(Message.Type.HEARTBEAT, workerId, null, null, clock.getTime());
                 out.writeObject(hbReq);
-                in.readObject();
+                Message response = (Message) in.readObject();
+                clock.update(response.getTimestamp());
 
             } catch (Exception e) {
                 System.err.println("Erro ao enviar heartbeat ao orquestrador.");
@@ -80,6 +82,7 @@ public class WorkerNode {
              ObjectInputStream in = new ObjectInputStream(orchSocket.getInputStream())) {
              
              Message message = (Message) in.readObject();
+             clock.update(message.getTimestamp());
              if (message.getType() == Message.Type.ASSIGN_TASK) {
                  Task task = message.getTask();
                  System.out.println("[" + workerId + "] Iniciando processamento: " + task.getDescription());
