@@ -26,7 +26,7 @@ public class ConnectionHandler implements Runnable {
             ObjectInputStream in = new ObjectInputStream(clientSocket.getInputStream())
         ) {
             Message message = (Message) in.readObject();
-            clock.update(clock.getTime()); 
+            clock.update(message.getTimestamp());
 
             if (message.getType() == Message.Type.AUTH_REQUEST) {
                 String[] credentials = message.getPayload().split(":");
@@ -73,6 +73,7 @@ public class ConnectionHandler implements Runnable {
                 // O estado já vem atualizado do worker, mas poderíamos acessar o globalTasks aqui se precisasse
                 out.writeObject(new Message(Message.Type.TASK_SUCCESS, "ACK de Conclusão", null, null));
             }
+            
 
         } catch (Exception e) {
             // Logs suprimidos para limpeza do console
