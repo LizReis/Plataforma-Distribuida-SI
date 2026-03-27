@@ -61,6 +61,28 @@ public class ClientNode {
             e.printStackTrace();
         }
     }
+
+    public void checkTaskStatus(String taskId) {
+        if (authToken == null) return;
+
+        try (Socket socket = new Socket(HOST, PORT);
+            ObjectOutputStream out = new ObjectOutputStream(socket.getOutputStream());
+            ObjectInputStream in = new ObjectInputStream(socket.getInputStream())) {
+
+            clock.tick();
+            Message req = new Message(Message.Type.CHECK_STATUS, taskId, authToken, null, clock.getTime());
+            out.writeObject(req);
+
+            Message response = (Message) in.readObject();
+            clock.update(response.getTimestamp());
+            System.out.println("Status da Tarefa [" + taskId + "]: " + response.getPayload());
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    
     
 
     public static void main(String[] args) {

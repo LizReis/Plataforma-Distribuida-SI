@@ -36,11 +36,6 @@ public class TaskDistributor {
         task.setStatus(Task.Status.ACTIVE);
         globalTasks.put(task.getTaskId(), task);
         
-    // ... resto do código
-
-        task.setStatus(Task.Status.ACTIVE);
-        globalTasks.put(task.getTaskId(), task);
-        
         System.out.println("Distribuindo tarefa '" + task.getDescription() + "' para " + chosenWorker.getWorkerId() + " (Via Round Robin)");
 
         // Envia a tarefa para o worker selecionado em uma nova Thread

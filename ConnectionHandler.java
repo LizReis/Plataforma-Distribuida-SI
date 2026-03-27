@@ -7,15 +7,17 @@ public class ConnectionHandler implements Runnable {
     private Socket clientSocket;
     private LamportClock clock;
     private AuthService authService;
+    private ConcurrentHashMap<String, Task> globalTasks;
     private ConcurrentHashMap<String, WorkerInfo> activeWorkers;
     private TaskDistributor taskDistributor; // Novo
 
     public ConnectionHandler(Socket clientSocket, LamportClock clock, AuthService authService, 
-                             ConcurrentHashMap<String, WorkerInfo> activeWorkers, TaskDistributor taskDistributor) {
+                             ConcurrentHashMap<String, WorkerInfo> activeWorkers, ConcurrentHashMap<String, Task> globalTasks, TaskDistributor taskDistributor) {
         this.clientSocket = clientSocket;
         this.clock = clock;
         this.authService = authService;
         this.activeWorkers = activeWorkers;
+        this.globalTasks = globalTasks;
         this.taskDistributor = taskDistributor;
     }
 
@@ -73,6 +75,19 @@ public class ConnectionHandler implements Runnable {
                 // O estado já vem atualizado do worker, mas poderíamos acessar o globalTasks aqui se precisasse
                 out.writeObject(new Message(Message.Type.TASK_SUCCESS, "ACK de Conclusão", null, null, clock.tick()));
             }
+
+            else if (message.getType() == Message.Type.CHECK_STATUS) {
+                if (authService.validateToken(message.getToken())) {
+                    String taskId = message.getPayload();
+                    Task t = globalTasks.get(taskId); // Acessa o globalTasks que agora foi passado via construtor
+                    
+                    String status = (t != null) ? t.getStatus().toString() : "TAREFA NÃO ENCONTRADA";
+                    out.writeObject(new Message(Message.Type.TASK_SUCCESS, status, null, null, clock.tick()));
+                } else {
+                    out.writeObject(new Message(Message.Type.ERROR, "Não autenticado", null, null, clock.tick()));
+                }
+            }
+
 
 
         } catch (Exception e) {

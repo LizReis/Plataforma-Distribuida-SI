@@ -42,11 +42,12 @@ public class PrimaryOrchestrator {
         System.out.println("Orquestrador Principal na porta " + PORT + " | Tarefas recuperadas: " + globalTasks.size());
         startHealthCheck(); 
         startStateSynchronization(); // NOVO: Inicia o envio de dados via Multicast
+        
 
         try (ServerSocket serverSocket = new ServerSocket(PORT)) {
             while (true) {
                 Socket clientSocket = serverSocket.accept();
-                threadPool.execute(new ConnectionHandler(clientSocket, clock, authService, activeWorkers, taskDistributor));
+                threadPool.execute(new ConnectionHandler(clientSocket, clock, authService, activeWorkers, globalTasks, taskDistributor));
             }
         } catch (IOException e) {
             e.printStackTrace();
