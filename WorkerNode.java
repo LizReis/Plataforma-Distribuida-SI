@@ -60,7 +60,8 @@ public class WorkerNode {
                 clock.update(response.getTimestamp());
 
             } catch (Exception e) {
-                System.err.println("Erro ao enviar heartbeat ao orquestrador.");
+                System.err.println("Erro ao enviar heartbeat. O Orquestrador pode estar em Failover.");
+                registerWithOrchestrator();
             }
         }, 5, 5, TimeUnit.SECONDS);
     }

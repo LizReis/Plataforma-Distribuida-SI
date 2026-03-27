@@ -71,6 +71,7 @@ public class ConnectionHandler implements Runnable {
             // NOVO: Recebendo a conclusão da tarefa do Worker
             else if (message.getType() == Message.Type.TASK_COMPLETED) {
                 Task completedTask = message.getTask();
+                globalTasks.put(completedTask.getTaskId(), completedTask);
                 System.out.println("-> ESTADO GLOBAL ATUALIZADO: Tarefa '" + completedTask.getDescription() + "' foi CONCLUÍDA!");
                 // O estado já vem atualizado do worker, mas poderíamos acessar o globalTasks aqui se precisasse
                 out.writeObject(new Message(Message.Type.TASK_SUCCESS, "ACK de Conclusão", null, null, clock.tick()));
