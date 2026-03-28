@@ -1,7 +1,16 @@
+package network;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
 import java.util.concurrent.ConcurrentHashMap;
+
+import model.Message;
+import model.Task;
+import model.WorkerInfo;
+import model.Message.Type;
+import services.AuthService;
+import services.LamportClock;
+import services.TaskDistributor;
 
 public class ConnectionHandler implements Runnable {
     private Socket clientSocket;

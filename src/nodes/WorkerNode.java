@@ -1,3 +1,4 @@
+package nodes;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.ServerSocket;
@@ -5,6 +6,12 @@ import java.net.Socket;
 import java.util.UUID;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
+
+import model.Message;
+import model.Task;
+import model.Message.Type;
+import model.Task.Status;
+import services.LamportClock;
 
 public class WorkerNode {
     private String workerId;

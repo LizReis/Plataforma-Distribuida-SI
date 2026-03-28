@@ -1,3 +1,4 @@
+package model;
 public class WorkerInfo {
     private String workerId;
     private String host;

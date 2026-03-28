@@ -1,9 +1,12 @@
+package nodes;
 import java.io.ByteArrayInputStream;
 import java.io.ObjectInputStream;
 import java.net.DatagramPacket;
 import java.net.InetAddress;
 import java.net.MulticastSocket;
 import java.util.concurrent.ConcurrentHashMap;
+
+import model.Task;
 
 public class BackupOrchestrator {
     private static final String MULTICAST_IP = "230.0.0.0";
