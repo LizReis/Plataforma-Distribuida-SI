@@ -115,9 +115,11 @@ public class WorkerNode {
              ObjectInputStream in = new ObjectInputStream(socket.getInputStream())) {
 
             clock.tick();
-            // ADICIONADO: clock.getTime()
             Message msg = new Message(Message.Type.TASK_COMPLETED, null, null, task, clock.getTime());
             out.writeObject(msg);
+
+            Message response = (Message) in.readObject();
+            clock.update(response.getTimestamp());
 
         } catch (Exception e) {
             System.err.println("Erro ao reportar conclusão da tarefa: " + e.getMessage());
