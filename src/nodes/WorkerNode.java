@@ -95,8 +95,8 @@ public class WorkerNode {
                  Task task = message.getTask();
                  System.out.println("[" + workerId + "] Iniciando processamento: " + task.getDescription());
                  
-                 // Simula processamento pesado (ex: 4 segundos)
-                 Thread.sleep(4000); 
+                 // Simula processamento pesado
+                 Thread.sleep(20000); 
                  
                  System.out.println("[" + workerId + "] Finalizado: " + task.getDescription());
                  task.setStatus(Task.Status.COMPLETED);
